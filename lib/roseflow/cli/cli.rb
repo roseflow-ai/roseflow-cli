@@ -2,6 +2,7 @@
 
 require "thor"
 require "pastel"
+require "roseflow/cli/version"
 
 module Roseflow
   module Cli
@@ -28,6 +29,9 @@ module Roseflow
 
       map %w(--version -v) => :version
 
+      require_relative "commands/configure"
+      register Roseflow::Cli::Commands::Configure, "configure", "configure [SUBCOMMAND]", "Command description..."
+
       desc "configure", "Configure Roseflow CLI"
       method_option :help, aliases: "-h", type: :boolean,
                            desc: "Display usage information"
@@ -48,13 +52,14 @@ module Roseflow
 
       def banner
         <<-OUT
+
   @@@@@@@   @@@@@@   @@@@@@  @@@@@@@@ @@@@@@@@ @@@       @@@@@@  @@@  @@@  @@@ 
   @@!  @@@ @@!  @@@ !@@      @@!      @@!      @@!      @@!  @@@ @@!  @@!  @@! 
   @!@!!@!  @!@  !@!  !@@!!   @!!!:!   @!!!:!   @!!      @!@  !@! @!!  !!@  @!@ 
   !!: :!!  !!:  !!!     !:!  !!:      !!:      !!:      !!:  !!!  !:  !!:  !!  
   :    : :  : :. :  ::.: :   : :: ::   :       : ::.: :  : :. :    ::.:  :::  
 
-  Interact with AI models effortlessly.
+  Interact with AI effortlessly in Ruby | https://roseflow.ai | Version #{Roseflow::Cli.gem_version}
         OUT
       end
     end

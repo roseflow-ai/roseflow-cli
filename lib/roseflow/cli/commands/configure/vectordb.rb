@@ -9,24 +9,23 @@ module Roseflow
   module Cli
     module Commands
       class Configure
-        class Provider < BaseCommand
+        class Vectordb < BaseCommand
           def execute(input: $stdin, output: $stdout)
-            puts @pastel.bright_green "\n✨ ROSEFLOW: Configuring an AI provider ✨\n"
-            @prompt.select("What AI provider would you like to configure?") do |menu|
-              menu.choice "HuggingFace", -> { configure_huggingface }, disabled: "(coming soon)"
-              menu.choice "MosaicML", -> { configure_mosaicml }, disabled: "(coming soon)"
-              menu.choice "OpenAI", -> { configure_openai }
+            puts @pastel.bright_green "\n✨ ROSEFLOW: Configuring a vector store ✨\n"
+            @prompt.select("What vector store provider would you like to configure?") do |menu|
+              menu.choice "pgvector", -> { configure_pgvector }, disabled: "(coming soon)"
+              menu.choice "Pinecone", -> { configure_pinecone }
             end
           end
 
-          def configure_openai
-            scope = @prompt.select("\nAre you configuring OpenAI locally or globally?") do |menu|
+          def configure_pinecone
+            scope = @prompt.select("\nAre you configuring Pinecone locally or globally?") do |menu|
               menu.choice "Local (configuration stored in current working directory)", -> { "local" }
               menu.choice "Global (system-wide configuration, stored in ~/.roseflow)", -> { "global" }
             end
 
-            puts @pastel.bright_yellow "\nSetting default configuration for OpenAI"
-            default_config = openai_environment_config({ organization_id: nil, api_key: nil })
+            puts @pastel.bright_yellow "\nSetting default configuration for Pinecone"
+            default_config = pinecone_environment_config({ environment: nil, api_key: nil })
 
             build_environments = @prompt.yes?("Do you want to create environment-specific configurations?")
 
@@ -39,7 +38,7 @@ module Roseflow
 
               configs = environments.each_with_object({}) do |environment, hash|
                 puts @pastel.bright_yellow "\nConfiguring [#{environment}] environment"
-                hash[environment] = openai_environment_config(default_config)
+                hash[environment] = pinecone_environment_config(default_config)
               end
 
               configs[:default] = default_config
@@ -53,7 +52,7 @@ module Roseflow
 
             tree = {
               "config" => [
-                            ["openai.yml", yaml_from_config(configs)],
+                            ["pinecone.yml", yaml_from_config(configs)],
                           ],
             }
 
@@ -67,25 +66,23 @@ module Roseflow
             puts @pastel.bright_green "\n✨ Configuration complete! ✨"
           end
 
-          def openai_environment_config(default)
-            api_key = @prompt.mask("Enter an OpenAI API key:") do |q|
+          def pinecone_environment_config(default)
+            api_key = @prompt.mask("Enter a Pinecone API key:") do |q|
               q.required true
             end
 
-            organization_id = @prompt.ask("Enter an OpenAI organization ID:") do |q|
+            environment_id = @prompt.ask("Enter a Pinecone environment ID:") do |q|
               q.required false
-              q.default default[:organization_id]
+              q.default default[:environment]
             end
 
-            { api_key: api_key, organization_id: organization_id }
+            { api_key: api_key, environment: environment_id }
           end
-
-          private
 
           def default_yaml_config(configs)
             <<-YAML
 default: &default
-  organization_id: #{configs.dig(:default, :organization_id)}
+  environment: #{configs.dig(:default, :environment)}
   api_key: #{configs.dig(:default, :api_key)}
 YAML
           end
