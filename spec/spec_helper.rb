@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "roseflow/cli"
+require "open3"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

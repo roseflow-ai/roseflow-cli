@@ -30,4 +30,9 @@ Gem::Specification.new do |spec|
   spec.add_dependency "tty-prompt"
   spec.add_dependency "tty-spinner"
   spec.add_dependency "pastel"
+  spec.add_dependency "thor"
+
+  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rspec"
+  spec.add_development_dependency "webmock"
 end
