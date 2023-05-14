@@ -26,10 +26,12 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "tty-command"
+  spec.add_dependency "tty-file"
   spec.add_dependency "tty-progressbar"
   spec.add_dependency "tty-prompt"
   spec.add_dependency "tty-spinner"
   spec.add_dependency "pastel"
+  spec.add_dependency "perfect_toml"
   spec.add_dependency "thor"
 
   spec.add_development_dependency "rake"

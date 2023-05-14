@@ -41,6 +41,9 @@ module Roseflow
         end
       end
 
+      require_relative "commands/configure"
+      register Roseflow::Cli::Commands::Configure, "configure", "configure [SUBCOMMAND]", "Configure Roseflow CLI"
+
       private
 
       def banner

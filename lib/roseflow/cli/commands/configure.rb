@@ -1,26 +1,16 @@
 # frozen_string_literal: true
 
-require_relative "../command"
+require "thor"
 
 module Roseflow
   module Cli
     module Commands
-      class Configure < Roseflow::Cli::Command
-        def initialize(options)
-          @options = options
-        end
+      class Configure < Thor
+        namespace :configure
 
-        def help(*args)
-          output.puts <<-OUT
-
-  @@@@@@@   @@@@@@   @@@@@@ @@@@@@@@ @@@@@@@@ @@@       @@@@@@  @@@  @@@  @@@ 
-  @@!  @@@ @@!  @@@ !@@     @@!      @@!      @@!      @@!  @@@ @@!  @@!  @@! 
-  @!@!!@!  @!@  !@!  !@@!!  @!!!:!   @!!!:!   @!!      @!@  !@! @!!  !!@  @!@ 
-  !!: :!!  !!:  !!!     !:! !!:      !!:      !!:      !!:  !!!  !:  !!:  !!  
-   :   : :  : :. :  ::.: :  : :: ::   :       : ::.: :  : :. :    ::.:  :::  
-
-          OUT
-        end
+        desc "provider", "Configure an AI provider for Roseflow"
+        method_option :help, aliases: "-h", type: :boolean,
+                             desc: "Display usage information"
 
         def provider(*)
           if options[:help]
@@ -29,11 +19,6 @@ module Roseflow
             require_relative "configure/provider"
             Roseflow::Cli::Commands::Configure::Provider.new(options).execute
           end
-        end
-
-        def execute(input: $stdin, output: $stdout)
-          # Command logic goes here ...
-          output.puts "OK"
         end
       end
     end
